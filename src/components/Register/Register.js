@@ -25,7 +25,7 @@ class Register extends Component {
 	}
 
 	onSubmitSignUp = () => {
-		fetch('http://localhost:3001/register', {
+		fetch('https://morning-castle-assessment-api.herokuapp.com/register', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({
