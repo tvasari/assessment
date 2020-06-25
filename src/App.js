@@ -1,26 +1,182 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import validator from 'validator';
+import 'animate.css';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Signin from './components/Signin/Signin.js';
+import Register from './components/Register/Register.js';
+import Navigation from './components/Navigation/Navigation.js';
+import ContentList from './components/ContentList/ContentList.js';
+
+
+const initialState = {
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: ''
+  },
+  content: {
+    tipo: '',
+    contenuto: ''
+  },
+  input: ''
+}
+
+class App extends Component {
+
+  constructor() {
+    super();
+    this.state = initialState;
+    this.logout = this.logout.bind(this);
+    this.resetTimeout = this.resetTimeout.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadContent();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.route !== prevState.route && this.state.route === 'home') {
+      this.events = ['load', 'mousemove', 'mousedown',
+      'click', 'scroll', 'keypress'];
+      this.events.forEach((event) => {
+        window.addEventListener(event, this.resetTimeout);
+      });
+      
+      this.setTimeout();
+    }
+  }
+
+  loadUser = (data) => {
+    this.setState({user :{
+        id: data.id,
+        name: data.name,
+        email: data.email
+      }})
+  }
+
+  onRouteChange = (route) => {
+    this.setState({route: route});
+
+    if (route === 'signout') {
+      this.setState(initialState);
+    } else if (route === 'home') {
+      this.setState({isSignedIn: true});
+    }
+  }
+
+  clearTimeout() {
+    if(this.warnTimeout)
+      clearTimeout(this.warnTimeout);
+
+    if(this.logoutTimeout)
+      clearTimeout(this.logoutTimeout);
+  }
+
+  setTimeout() {
+    this.warnTimeout = setTimeout(() => alert('logout in 1 minuto.'), 8 * 30 * 1000)
+    this.logoutTimeout = setTimeout(this.logout, 10 * 30 * 1000);
+  }
+
+  resetTimeout() {
+    this.clearTimeout();
+    this.setTimeout();
+  }
+
+  logout() {
+    this.setState(initialState);
+    this.destroy();
+  }
+
+  destroy() {
+    this.clearTimeout();
+
+    this.events.forEach((event) => {
+      window.removeEventListener(event, this.resetTimeout);
+    });
+  }
+
+  loadContent() {
+    fetch('http://localhost:3001/content')
+      .then(response => response.json())
+      .then(data => {
+          const contentArr = [];
+          data.forEach(content => {
+            if (content.is_approved === '1') { 
+              contentArr.push({
+                tipo: content.tipo,
+                contenuto: content.contenuto
+              })
+            }
+          });
+          this.setState({ content: contentArr })
+      })
+      .catch(err => console.log(err))
+  }
+
+  uploadContent() {
+    let dataType;
+    validator.isURL(this.state.input)
+    ? dataType = 'immagine'
+    : dataType = 'testo'
+
+    fetch('http://localhost:3001/postcontent', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            tipo: dataType,
+            contenuto: this.state.input
+        })
+    })
+    .then(response => response.json())
+    .then(data => this.loadContent())
+    let popup = document.getElementById('popup');
+    popup.style.visibility = 'visible';
+    popup.className = 'my-animation';
+    setTimeout(() => {popup.style.visibility = 'hidden'}, 2000);
+  }
+
+  renderSwitch() {
+    const { route, content } = this.state;
+
+    switch(true) {
+      case route === 'home':
+        return <div>
+                  <h1>Posta qui il tuo contenuto</h1>
+                  <ContentList content={content}/>
+                </div>
+      case route === 'signin' || route === 'signout':
+        return <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+      case route === 'register':
+        return <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+      case route === 'upload':
+        return <div>
+                    <h3>Inserisci un testo o l'URL di un'immagine da pubblicare</h3>
+                    <div>
+                        <input type='text' onChange={(event) => this.setState({input: event.target.value})}></input>
+                        <a className="f6 link dim br-pill ph3 pv2 mb2 dib white bg-purple" href="#0" onClick={() => this.uploadContent()}>Upload</a>
+                    </div>
+                    <h1 id='popup' className=''>Grazie, adesso attendi che il tuo contenuto sia approvato per la pubblicazione.</h1>
+                </div>
+      default:
+        return <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+    }
+  }
+
+  render() {
+    const { isSignedIn } = this.state;
+    
+    return (
+      <div className="App">
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}  />
+        { 
+          this.renderSwitch()
+        }
+      </div>
+    );
+  }
 }
 
 export default App;
