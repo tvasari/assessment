@@ -99,7 +99,7 @@ class App extends Component {
   }
 
   loadContent() {
-    fetch('http://localhost:3001/content')
+    fetch('https://morning-castle-82227.herokuapp.com/content')
       .then(response => response.json())
       .then(data => {
           const contentArr = [];
@@ -122,7 +122,7 @@ class App extends Component {
     ? dataType = 'immagine'
     : dataType = 'testo'
 
-    fetch('http://localhost:3001/postcontent', {
+    fetch('https://morning-castle-82227.herokuapp.com/postcontent', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
