@@ -24,6 +24,7 @@ const initialState = {
   input: ''
 }
 
+
 class App extends Component {
 
   constructor() {
