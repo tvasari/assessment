@@ -100,7 +100,6 @@ class App extends Component {
     fetch('https://morning-castle-assessment-api.herokuapp.com/content')
       .then(response => response.json())
       .then(data => {
-          console.log('content from server', data)
           const contentArr = [];
           data.forEach(content => {
             if (content.is_approved === '1') { 
