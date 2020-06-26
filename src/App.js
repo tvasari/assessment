@@ -109,7 +109,6 @@ class App extends Component {
               })
             }
           });
-          console.log('contentarr', contentArr)
           this.setState({ content: contentArr })
       })
       .catch(err => console.log(err))
