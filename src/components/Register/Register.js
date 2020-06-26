@@ -18,7 +18,7 @@ class Register extends Component {
 
 	onEmailChange = (event) => {
 		this.setState({email: event.target.value})
-		console.log('email from front', email)
+		console.log('email from front', this.state.email)
 	}
 
 	onPasswordChange = (event) => {
