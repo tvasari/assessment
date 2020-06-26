@@ -136,7 +136,7 @@ class App extends Component {
     let popup = document.getElementById('popup');
     popup.style.visibility = 'visible';
     popup.className = 'my-animation';
-    setTimeout(() => {popup.style.visibility = 'hidden'}, 2000);
+    setTimeout(() => {popup.style.visibility = 'hidden'}, 3000);
   }
 
   renderSwitch() {

@@ -9,5 +9,5 @@
 .my-animation {
   animation: fadeOutDown;
   animation-duration: 1s;
-  animation-delay: 1s;
+  animation-delay: 2s;
 }
