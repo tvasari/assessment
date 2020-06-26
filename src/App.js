@@ -9,27 +9,24 @@ import Navigation from './components/Navigation/Navigation.js';
 import ContentList from './components/ContentList/ContentList.js';
 
 
-const initialState = {
-  route: 'signin',
-  isSignedIn: false,
-  user: {
-    id: '',
-    name: '',
-    email: ''
-  },
-  content: {
-    tipo: '',
-    contenuto: ''
-  },
-  input: ''
-}
-
-
 class App extends Component {
 
   constructor() {
     super();
-    this.state = initialState;
+    this.state = {
+      route: 'signin',
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: ''
+      },
+      content: {
+        tipo: '',
+        contenuto: ''
+      },
+      input: ''
+    };
     this.logout = this.logout.bind(this);
     this.resetTimeout = this.resetTimeout.bind(this);
   }
@@ -62,7 +59,7 @@ class App extends Component {
     this.setState({route: route});
 
     if (route === 'signout') {
-      this.setState(initialState);
+      this.setState({route: 'signin', isSignedIn: false});
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
     }
@@ -87,7 +84,7 @@ class App extends Component {
   }
 
   logout() {
-    this.setState(initialState);
+    this.setState({route: 'signin', isSignedIn: false});
     this.destroy();
   }
 
