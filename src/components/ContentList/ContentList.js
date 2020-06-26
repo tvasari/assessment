@@ -1,6 +1,7 @@
 import React from 'react';
 
 const ContentList = ( { content } ) => {
+    console.log('contentlist content', content)
     return(
         <div style={{'display': 'grid', 'gridTemplateColumns': 'repeat(2, 1fr)', 'gridGap': '15px'}}>
             {
