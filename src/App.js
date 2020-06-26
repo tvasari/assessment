@@ -35,7 +35,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('loading content')
     this.loadContent();
   }
 
@@ -104,6 +103,7 @@ class App extends Component {
     fetch('https://morning-castle-assessment-api.herokuapp.com/content')
       .then(response => response.json())
       .then(data => {
+          console.log('content from server', data)
           const contentArr = [];
           data.forEach(content => {
             if (content.is_approved === '1') { 
@@ -113,6 +113,7 @@ class App extends Component {
               })
             }
           });
+          console.log('contentarr', contentArr)
           this.setState({ content: contentArr })
       })
       .catch(err => console.log(err))
